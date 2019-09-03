@@ -1,5 +1,4 @@
-
-FROM python:2.7
+FROM arm32v7/python:2.7-stretch
 EXPOSE 5000
 LABEL maintainer "gaetancollaud@gmail.com"
 
@@ -16,7 +15,7 @@ WORKDIR /opt/octoprint
 
 #install ffmpeg
 RUN cd /tmp \
-  && wget -O ffmpeg.tar.xz https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-i686-static.tar.xz \
+  && wget -O ffmpeg.tar.xz https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-armhf-static.tar.xz \
 	&& mkdir -p /opt/ffmpeg \
 	&& tar xvf ffmpeg.tar.xz -C /opt/ffmpeg --strip-components=1 \
   && rm -Rf /tmp/*
