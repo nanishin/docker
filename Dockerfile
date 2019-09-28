@@ -33,6 +33,22 @@ RUN cd /tmp \
 #Create an octoprint user
 RUN useradd -ms /bin/bash octoprint && adduser octoprint dialout
 RUN chown octoprint:octoprint /opt/octoprint
+
+#To support GPIO
+RUN pip install --upgrade RPi.GPIO
+
+#To control GPIO with octoprint user in docker container
+RUN apt-get update && apt-get install -y sudo
+RUN echo "octoprint ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_octoprint-nopasswd
+RUN chmod 0440 /etc/sudoers.d/010_octoprint-nopasswd
+
+# Not worked even octoprint user is added to gpio group
+#RUN groupadd gpio
+#RUN usermod -a -G gpio octoprint
+#RUN grep gpio /etc/group
+#RUN chown root.gpio /dev/gpiomem
+#RUN chmod g+rw /dev/gpiomem
+
 USER octoprint
 #This fixes issues with the volume command setting wrong permissions
 RUN mkdir /home/octoprint/.octoprint
@@ -43,6 +59,5 @@ RUN git clone --branch $tag https://github.com/foosel/OctoPrint.git /opt/octopri
 	&& ./venv/bin/python setup.py install
 
 VOLUME /home/octoprint/.octoprint
-
 
 CMD ["/opt/octoprint/venv/bin/octoprint", "serve"]
